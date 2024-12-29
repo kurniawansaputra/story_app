@@ -6,10 +6,12 @@ import 'core/themes/theme.dart';
 import 'core/themes/util.dart';
 import 'data/api/api_service.dart';
 import 'data/prefs/prefs.dart';
+import 'providers/addNewStory/image_picker_provider.dart';
+import 'providers/addNewStory/image_upload_provider.dart';
 import 'providers/auth/login_provider.dart';
 import 'providers/auth/register_provider.dart';
 import 'providers/home/stories_provider.dart';
-import 'providers/storyDetail/story_detail.dart';
+import 'providers/storyDetail/story_detail_provider.dart';
 
 void main() {
   runApp(
@@ -40,6 +42,14 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => StoryDetailProvider(
             context.read<ApiService>(),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ImagePickerProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ImageUploadProvider(
+            ApiService(),
           ),
         ),
       ],

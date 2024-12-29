@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:story_app/ui/addNewStory/pages/add_new_story_page.dart';
 
 import '../../ui/account/pages/account_page.dart';
+import '../../ui/addNewStory/pages/add_new_story_page.dart';
 import '../../ui/auth/pages/login_page.dart';
 import '../../ui/auth/pages/register_page.dart';
 import '../../ui/detail/pages/detail_page.dart';
@@ -30,7 +30,9 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: Routes.addNewStory,
       name: Routes.addNewStory,
-      builder: (context, state) => const AddNewStoryPage(),
+      builder: (context, state) => AddNewStoryPage(
+        onRefresh: state.extra as void Function(),
+      ),
     ),
     GoRoute(
       path: Routes.account,

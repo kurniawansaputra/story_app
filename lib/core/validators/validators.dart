@@ -36,3 +36,11 @@ String? validateName(String? value) {
 
   return null;
 }
+
+String? validateDescription(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Description is required';
+  }
+
+  return null;
+}

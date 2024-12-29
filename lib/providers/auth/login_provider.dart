@@ -29,9 +29,9 @@ class LoginProvider extends ChangeNotifier {
           _resultState = LoginErrorState(errorMessage);
           notifyListeners();
         },
-        (authResponse) {
-          _prefs.saveAuthData(authResponse);
-          _resultState = LoginLoadedState(authResponse);
+        (response) {
+          _prefs.saveAuthData(response);
+          _resultState = LoginLoadedState(response);
           notifyListeners();
         },
       );

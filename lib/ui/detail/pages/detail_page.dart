@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/components/message_widget.dart';
 import '../../../core/static/story_detail.dart';
-import '../../../providers/storyDetail/story_detail.dart';
+import '../../../providers/storyDetail/story_detail_provider.dart';
 import '../components/body_of_detail_widget.dart';
 import '../components/shimmer_detail_widget.dart';
 

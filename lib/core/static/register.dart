@@ -1,4 +1,4 @@
-import 'package:story_app/data/models/responses/auth_response_model.dart';
+import '../../data/models/responses/default_response_model.dart';
 
 sealed class RegisterResultState {}
 
@@ -13,7 +13,7 @@ class RegisterErrorState extends RegisterResultState {
 }
 
 class RegisterLoadedState extends RegisterResultState {
-  final AuthResponseModel data;
+  final DefaultResponseModel data;
 
   RegisterLoadedState(this.data);
 }

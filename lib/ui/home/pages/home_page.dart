@@ -18,16 +18,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int page = 1;
-  int size = 10;
-  int location = 1;
-
   Future<void> _onRefresh() async {
-    await context.read<StoriesProvider>().getStories(
-          page: page,
-          size: size,
-          location: location,
-        );
+    await context.read<StoriesProvider>().getStories();
   }
 
   @override
@@ -60,7 +52,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(Routes.addNewStory);
+          context.push(Routes.addNewStory, extra: _onRefresh);
         },
         child: const Icon(Icons.add),
       ),

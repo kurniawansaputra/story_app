@@ -26,8 +26,8 @@ class RegisterProvider extends ChangeNotifier {
           _resultState = RegisterErrorState(errorMessage);
           notifyListeners();
         },
-        (authResponse) {
-          _resultState = RegisterLoadedState(authResponse);
+        (response) {
+          _resultState = RegisterLoadedState(response);
           notifyListeners();
         },
       );

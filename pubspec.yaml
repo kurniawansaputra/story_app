@@ -36,6 +36,7 @@ dependencies:
   go_router: ^14.6.2
   google_fonts: ^6.2.1
   http: ^1.2.2
+  image: ^4.5.2
   image_picker: ^1.1.2
   liquid_pull_to_refresh: ^3.0.1
   provider: ^6.1.2

@@ -25,8 +25,8 @@ class StoryDetailProvider extends ChangeNotifier {
           _resultState = StoryDetailErrorState(errorMessage);
           notifyListeners();
         },
-        (storyDetail) {
-          _resultState = StoryDetailLoadedState(storyDetail);
+        (response) {
+          _resultState = StoryDetailLoadedState(response);
           notifyListeners();
         },
       );

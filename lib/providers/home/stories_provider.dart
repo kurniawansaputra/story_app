@@ -34,8 +34,8 @@ class StoriesProvider extends ChangeNotifier {
           _resultState = StoriesErrorState(errorMessage);
           notifyListeners();
         },
-        (stories) {
-          _resultState = StoriesLoadedState(stories.listStory ?? []);
+        (response) {
+          _resultState = StoriesLoadedState(response.listStory ?? []);
           notifyListeners();
         },
       );
