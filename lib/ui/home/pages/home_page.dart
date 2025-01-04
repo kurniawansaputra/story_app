@@ -18,18 +18,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ScrollController scrollController = ScrollController();
+
   Future<void> _onRefresh() async {
-    await context.read<StoriesProvider>().getStories();
+    final storiesProvider = context.read<StoriesProvider>();
+    storiesProvider.resetStories();
+    await storiesProvider.getStories();
   }
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () {
-        _onRefresh();
-      },
-    );
+    final storiesProvider = context.read<StoriesProvider>();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (storiesProvider.pageItems != null) {
+          storiesProvider.getStories();
+        }
+      }
+    });
+
+    Future.microtask(() async => storiesProvider.getStories());
   }
 
   @override
@@ -62,26 +73,37 @@ class _HomePageState extends State<HomePage> {
             return LiquidPullToRefresh(
               onRefresh: _onRefresh,
               showChildOpacityTransition: false,
-              child: switch (provider.resultState) {
+              child: switch (provider.storiesState) {
                 StoriesLoadingState() => Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ListView.builder(
-                      itemCount: 3,
+                      controller: scrollController,
+                      itemCount: 3, // Show 3 shimmer items while loading
                       itemBuilder: (context, index) {
                         return const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                          ),
-                          child: ShimmerStoryCard(),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: ShimmerStoryCard(), // Shimmer effect
                         );
                       },
                     ),
                   ),
                 StoriesLoadedState(data: var stories) => stories.isNotEmpty
                     ? ListView.builder(
+                        controller: scrollController,
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        itemCount: stories.length,
+                        itemCount: stories.length +
+                            (provider.pageItems != null ? 1 : 0),
                         itemBuilder: (context, index) {
+                          if (index == stories.length &&
+                              provider.pageItems != null) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+
                           final story = stories[index];
 
                           bool isFirstCard = index == 0;
@@ -104,9 +126,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       )
                     : const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: Center(
                           child: Message(
                             title: 'No stories found',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/components/avatar_name_widget.dart';
-import '../../../data/models/responses/story_detail_response_model.dart';
+import '../../../data/models/responses/storyDetail/story.dart';
 import '../../home/components/image_story_widget.dart';
 
 class BodyOfDetail extends StatelessWidget {

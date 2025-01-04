@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 
 import '../../data/api/api_service.dart';
-import '../../data/models/responses/default_response_model.dart';
+import '../../data/models/responses/default/default_response.dart';
 
 class ImageUploadProvider extends ChangeNotifier {
   final ApiService apiService;
   bool isUploading = false;
   String message = "";
-  DefaultResponseModel? defaultResponse;
+  DefaultResponse? defaultResponse;
 
   ImageUploadProvider(this.apiService);
 
@@ -26,7 +26,7 @@ class ImageUploadProvider extends ChangeNotifier {
       isUploading = true;
       notifyListeners();
 
-      final Either<String, DefaultResponseModel> result =
+      final Either<String, DefaultResponse> result =
           await apiService.addNewStory(bytes, fileName, description);
 
       result.fold(

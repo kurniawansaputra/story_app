@@ -24,8 +24,9 @@ class _AccountPageState extends State<AccountPage> {
 
   void _loadPrefs() async {
     final authData = await Prefs().getAuthData();
+    print(authData);
     setState(() {
-      name = authData?.loginResult?.name ?? 'null';
+      name = authData?.loginResults.name ?? 'null';
     });
   }
 

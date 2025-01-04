@@ -1,4 +1,4 @@
-import 'package:story_app/data/models/responses/story_response_model.dart';
+import '../../data/models/responses/stories/list_story.dart';
 
 sealed class StoriesResultState {}
 

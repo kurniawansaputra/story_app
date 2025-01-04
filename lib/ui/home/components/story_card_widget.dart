@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/components/avatar_name_widget.dart';
 import '../../../core/routes/router.dart';
-import '../../../data/models/responses/story_response_model.dart';
+import '../../../data/models/responses/stories/list_story.dart';
 import 'image_story_widget.dart';
 
 class StoryCard extends StatelessWidget {

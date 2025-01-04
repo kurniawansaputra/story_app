@@ -7,14 +7,14 @@ import 'package:http/http.dart' as http;
 import '../../core/constants/variables.dart';
 import '../models/requests/login_request_model.dart';
 import '../models/requests/register_request_model.dart';
-import '../models/responses/auth_response_model.dart';
-import '../models/responses/default_response_model.dart';
-import '../models/responses/story_detail_response_model.dart';
-import '../models/responses/story_response_model.dart';
+import '../models/responses/auth/auth_response.dart';
+import '../models/responses/default/default_response.dart';
+import '../models/responses/stories/story_response.dart';
+import '../models/responses/storyDetail/story_detail_response.dart';
 import '../prefs/prefs.dart';
 
 class ApiService {
-  Future<Either<String, AuthResponseModel>> login(
+  Future<Either<String, AuthResponse>> login(
       LoginRequestModel loginRequestModel) async {
     try {
       final url = Uri.parse('${Variables.baseUrl}/login');
@@ -32,7 +32,9 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return Right(AuthResponseModel.fromJson(response.body));
+        final responseBody = jsonDecode(response.body);
+        final authResponse = AuthResponse.fromJson(responseBody);
+        return Right(authResponse);
       } else {
         final errorJson = jsonDecode(response.body) as Map<String, dynamic>;
         final errorMessage = errorJson['message'] ?? 'Unknown error occurred';
@@ -43,7 +45,7 @@ class ApiService {
     }
   }
 
-  Future<Either<String, DefaultResponseModel>> register(
+  Future<Either<String, DefaultResponse>> register(
       RegisterRequestModel registerRequestModel) async {
     try {
       final url = Uri.parse('${Variables.baseUrl}/register');
@@ -61,7 +63,9 @@ class ApiService {
       );
 
       if (response.statusCode == 201) {
-        return Right(DefaultResponseModel.fromJson(response.body));
+        final responseBody = jsonDecode(response.body);
+        final defaultResponse = DefaultResponse.fromJson(responseBody);
+        return Right(defaultResponse);
       } else {
         final errorJson = jsonDecode(response.body) as Map<String, dynamic>;
         final errorMessage = errorJson['message'] ?? 'Unknown error occurred';
@@ -72,7 +76,7 @@ class ApiService {
     }
   }
 
-  Future<Either<String, StoryResponseModel>> getStories({
+  Future<Either<String, StoryResponse>> getStories({
     int? page,
     int? size,
     int? location,
@@ -92,7 +96,7 @@ class ApiService {
       final header = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${authData?.loginResult?.token}',
+        'Authorization': 'Bearer ${authData?.loginResults.token}',
       };
 
       final response = await http.get(
@@ -101,7 +105,9 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return Right(StoryResponseModel.fromJson((response.body)));
+        final responseBody = jsonDecode(response.body);
+        final storyResponse = StoryResponse.fromJson(responseBody);
+        return Right(storyResponse);
       } else {
         final errorJson = jsonDecode(response.body) as Map<String, dynamic>;
         final errorMessage = errorJson['message'] ?? 'Unknown error occurred';
@@ -112,8 +118,7 @@ class ApiService {
     }
   }
 
-  Future<Either<String, StoryDetailResponseModel>> getStoryDetail(
-      String id) async {
+  Future<Either<String, StoryDetailResponse>> getStoryDetail(String id) async {
     try {
       final authData = await Prefs().getAuthData();
 
@@ -122,7 +127,7 @@ class ApiService {
       final header = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${authData?.loginResult?.token}',
+        'Authorization': 'Bearer ${authData?.loginResults.token}',
       };
 
       final response = await http.get(
@@ -131,7 +136,9 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return Right(StoryDetailResponseModel.fromJson((response.body)));
+        final responseBody = jsonDecode(response.body);
+        final storyDetailResponse = StoryDetailResponse.fromJson(responseBody);
+        return Right(storyDetailResponse);
       } else {
         final errorJson = jsonDecode(response.body) as Map<String, dynamic>;
         final errorMessage = errorJson['message'] ?? 'Unknown error occurred';
@@ -142,7 +149,7 @@ class ApiService {
     }
   }
 
-  Future<Either<String, DefaultResponseModel>> addNewStory(
+  Future<Either<String, DefaultResponse>> addNewStory(
     List<int> bytes,
     String fileName,
     String description,
@@ -164,7 +171,7 @@ class ApiService {
       };
 
       final Map<String, String> headers = {
-        "Authorization": "Bearer ${authData?.loginResult?.token}",
+        "Authorization": "Bearer ${authData?.loginResults.token}",
       };
 
       request.files.add(multiPartFile);
@@ -178,9 +185,9 @@ class ApiService {
       final String responseData = String.fromCharCodes(responseList);
 
       if (statusCode == 201) {
-        final defaultResponseModel =
-            DefaultResponseModel.fromJson(responseData);
-        return Right(defaultResponseModel);
+        final responseBody = jsonDecode(responseData);
+        final defaultResponse = DefaultResponse.fromJson(responseBody);
+        return Right(defaultResponse);
       } else {
         final errorJson = jsonDecode(responseData) as Map<String, dynamic>;
         final errorMessage = errorJson['message'] ?? 'Unknown error occurred';

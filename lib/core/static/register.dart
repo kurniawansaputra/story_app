@@ -1,4 +1,4 @@
-import '../../data/models/responses/default_response_model.dart';
+import '../../data/models/responses/default/default_response.dart';
 
 sealed class RegisterResultState {}
 
@@ -13,7 +13,7 @@ class RegisterErrorState extends RegisterResultState {
 }
 
 class RegisterLoadedState extends RegisterResultState {
-  final DefaultResponseModel data;
+  final DefaultResponse data;
 
   RegisterLoadedState(this.data);
 }

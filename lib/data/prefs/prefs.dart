@@ -1,30 +1,39 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/responses/auth_response_model.dart';
+import '../models/responses/auth/auth_response.dart';
 
 class Prefs {
-  Future<void> saveAuthData(AuthResponseModel data) async {
+  static const String _authDataKey = 'auth_data';
+
+  Future<void> saveAuthData(AuthResponse data) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_data', data.toJson());
+    final jsonData = jsonEncode(data.toJson());
+    await prefs.setString(_authDataKey, jsonData);
   }
 
-  Future<AuthResponseModel?> getAuthData() async {
+  Future<AuthResponse?> getAuthData() async {
     final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString('auth_data');
+    final data = prefs.getString(_authDataKey);
     if (data != null) {
-      return AuthResponseModel.fromJson(data);
-    } else {
-      return null;
+      try {
+        final jsonData = jsonDecode(data) as Map<String, dynamic>;
+        return AuthResponse.fromJson(jsonData);
+      } catch (e) {
+        return null;
+      }
     }
+    return null;
   }
 
   Future<void> removeAuthData() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('auth_data');
+    await prefs.remove(_authDataKey);
   }
 
   Future<bool> isUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey('auth_data');
+    return prefs.containsKey(_authDataKey);
   }
 }

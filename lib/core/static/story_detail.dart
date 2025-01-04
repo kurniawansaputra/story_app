@@ -1,4 +1,4 @@
-import '../../data/models/responses/story_detail_response_model.dart';
+import '../../data/models/responses/storyDetail/story_detail_response.dart';
 
 sealed class StoryDetailResultState {}
 
@@ -13,7 +13,7 @@ class StoryDetailErrorState extends StoryDetailResultState {
 }
 
 class StoryDetailLoadedState extends StoryDetailResultState {
-  final StoryDetailResponseModel data;
+  final StoryDetailResponse data;
 
   StoryDetailLoadedState(this.data);
 }

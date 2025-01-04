@@ -1,4 +1,4 @@
-import 'package:story_app/data/models/responses/auth_response_model.dart';
+import '../../data/models/responses/auth/auth_response.dart';
 
 sealed class LoginResultState {}
 
@@ -13,7 +13,7 @@ class LoginErrorState extends LoginResultState {
 }
 
 class LoginLoadedState extends LoginResultState {
-  final AuthResponseModel data;
+  final AuthResponse data;
 
   LoginLoadedState(this.data);
 }
