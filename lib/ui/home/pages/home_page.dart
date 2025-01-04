@@ -18,12 +18,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int? location = 1;
   final ScrollController scrollController = ScrollController();
 
   Future<void> _onRefresh() async {
     final storiesProvider = context.read<StoriesProvider>();
     storiesProvider.resetStories();
-    await storiesProvider.getStories();
+    await storiesProvider.getStories(
+      location: location,
+    );
   }
 
   @override
@@ -35,12 +38,18 @@ class _HomePageState extends State<HomePage> {
       if (scrollController.position.pixels >=
           scrollController.position.maxScrollExtent) {
         if (storiesProvider.pageItems != null) {
-          storiesProvider.getStories();
+          storiesProvider.getStories(
+            location: location,
+          );
         }
       }
     });
 
-    Future.microtask(() async => storiesProvider.getStories());
+    Future.microtask(
+      () async => storiesProvider.getStories(
+        location: location,
+      ),
+    );
   }
 
   @override
