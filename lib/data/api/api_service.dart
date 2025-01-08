@@ -153,6 +153,8 @@ class ApiService {
     List<int> bytes,
     String fileName,
     String description,
+    double? lat,
+    double? lon,
   ) async {
     try {
       final url = Uri.parse('${Variables.baseUrl}/stories');
@@ -168,6 +170,8 @@ class ApiService {
 
       final Map<String, String> fields = {
         "description": description,
+        if (lat != null) "lat": lat.toString(),
+        if (lon != null) "lon": lon.toString(),
       };
 
       final Map<String, String> headers = {

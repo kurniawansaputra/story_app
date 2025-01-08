@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/components/custom_text_field_widget.dart';
+import '../../../core/routes/router.dart';
 import '../../../core/validators/validators.dart';
 import '../../../providers/addNewStory/image_picker_provider.dart';
 import '../../../providers/addNewStory/image_upload_provider.dart';
@@ -25,7 +27,18 @@ class AddNewStoryPage extends StatefulWidget {
 
 class _AddNewStoryPageState extends State<AddNewStoryPage> {
   final _descriptionController = TextEditingController();
+  final _locationController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  void _navigateToSelectLocation() async {
+    final result = await context.push<LatLng>(Routes.selectLocation);
+
+    if (result != null) {
+      setState(() {
+        _locationController.text = '${result.latitude}, ${result.longitude}';
+      });
+    }
+  }
 
   void _showImageSourceDialog() {
     showModalBottomSheet(
@@ -153,6 +166,22 @@ class _AddNewStoryPageState extends State<AddNewStoryPage> {
                 const SizedBox(
                   height: 24.0,
                 ),
+                GestureDetector(
+                  onTap: _navigateToSelectLocation,
+                  child: AbsorbPointer(
+                    child: CustomTextField(
+                      controller: _locationController,
+                      labelText: 'Location',
+                      keyboardType: TextInputType.text,
+                      validator: validateLocation,
+                      minLines: 1,
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 24.0,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -254,6 +283,16 @@ class _AddNewStoryPageState extends State<AddNewStoryPage> {
     }
 
     final description = _descriptionController.text;
+    double latitude = 0.0;
+    double longitude = 0.0;
+
+    if (_locationController.text.isNotEmpty) {
+      final locationParts = _locationController.text.split(", ");
+      if (locationParts.length == 2) {
+        latitude = double.tryParse(locationParts[0]) ?? 0.0;
+        longitude = double.tryParse(locationParts[1]) ?? 0.0;
+      }
+    }
 
     final fileName = imageFile.name;
     final bytes = await imageFile.readAsBytes();
@@ -264,6 +303,8 @@ class _AddNewStoryPageState extends State<AddNewStoryPage> {
       newBytes,
       fileName,
       description,
+      latitude,
+      longitude,
     );
 
     if (imageUploadProvider.defaultResponse != null) {

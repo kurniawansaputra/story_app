@@ -44,3 +44,11 @@ String? validateDescription(String? value) {
 
   return null;
 }
+
+String? validateLocation(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Location is required';
+  }
+
+  return null;
+}

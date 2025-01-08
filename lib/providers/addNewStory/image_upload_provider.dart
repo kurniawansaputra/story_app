@@ -19,6 +19,8 @@ class ImageUploadProvider extends ChangeNotifier {
     List<int> bytes,
     String fileName,
     String description,
+    double? lat,
+    double? lon,
   ) async {
     try {
       message = "";
@@ -27,7 +29,13 @@ class ImageUploadProvider extends ChangeNotifier {
       notifyListeners();
 
       final Either<String, DefaultResponse> result =
-          await apiService.addNewStory(bytes, fileName, description);
+          await apiService.addNewStory(
+        bytes,
+        fileName,
+        description,
+        lat ?? 0.0,
+        lon ?? 0.0,
+      );
 
       result.fold(
         (errorMessage) {

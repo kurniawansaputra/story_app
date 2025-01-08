@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/components/avatar_name_widget.dart';
@@ -20,23 +21,50 @@ class BodyOfDetail extends StatefulWidget {
 class _BodyOfDetailState extends State<BodyOfDetail> {
   late GoogleMapController mapController;
   final Set<Marker> markers = {};
+  String? street;
+  String? address;
 
   @override
   void initState() {
     super.initState();
 
     if (widget.data.lat != null && widget.data.lon != null) {
-      final marker = Marker(
-        markerId: MarkerId(widget.data.id ?? "default_id"),
-        position: LatLng(widget.data.lat!, widget.data.lon!),
-        onTap: () {
-          mapController.animateCamera(
-            CameraUpdate.newLatLngZoom(
-                LatLng(widget.data.lat!, widget.data.lon!), 18),
-          );
-        },
+      _fetchLocationInfo(LatLng(widget.data.lat!, widget.data.lon!));
+    }
+  }
+
+  Future<void> _fetchLocationInfo(LatLng position) async {
+    try {
+      final placemarks = await geo.placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
       );
-      markers.add(marker);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        setState(() {
+          street = place.street ?? 'Unknown Street';
+          address =
+              '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+
+          final marker = Marker(
+            markerId: MarkerId(widget.data.id ?? "default_id"),
+            position: position,
+            infoWindow: InfoWindow(
+              title: street,
+              snippet: address,
+            ),
+            onTap: () {
+              mapController.animateCamera(
+                CameraUpdate.newLatLngZoom(position, 18),
+              );
+            },
+          );
+          markers.clear();
+          markers.add(marker);
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch location info: $e');
     }
   }
 
